@@ -12,12 +12,15 @@ UGLIFY = node_modules/.bin/uglifyjs
 BROWSERIFY = node_modules/.bin/browserify
 TEMPLATES = $(shell find templates -type f -name '*.html')
 
-all: \
+all:
+	make install && make build
+
+build: \
 	dist/prose.js \
 	dist/prose.min.js
 
 install:
-	npm install && mkdir -p dist && make
+	npm install && mkdir -p dist
 
 clean:
 	rm -f dist/*
