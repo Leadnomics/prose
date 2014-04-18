@@ -10,7 +10,7 @@ module.exports = Backbone.View.extend({
   events: {
     'focus input': 'checkPlaceholder',
     'change input[data-mode="path"]': 'updatePath',
-    'change input[data-mode="title"]': 'updateTitle'
+    'change input[data-mode="title"]': 'updateTitle',
   },
 
   initialize: function(options) {
@@ -88,7 +88,6 @@ module.exports = Backbone.View.extend({
 
   updateTitle: function(e) {
     if (e) e.preventDefault();
-
     // TODO: update metadata title here, don't rely on makeDi
 
     // Only update path on new files that are not cloned
@@ -98,15 +97,21 @@ module.exports = Backbone.View.extend({
       var path = this.file.get('path');
       var parts = path.split('/');
       var name = parts.pop();
+      var slug = util.stringToUrl(value);
+      var metadata = this.file.get('metadata');
+
 
       // Preserve the date and the extension
       var date = util.extractDate(name);
       var extension = name.split('.').pop();
 
-      path = parts.join('/') + '/' + date + '-' +
-        util.stringToUrl(value) + '.' + extension;
+      path = parts.join('/') + '/' + slug + '/index.' + extension;
+
+      metadata.slug = slug;
+      metadata.title = value;
 
       this.file.set('path', path);
+      this.file.set('metadata', metadata);
     }
 
     this.trigger('makeDirty');
